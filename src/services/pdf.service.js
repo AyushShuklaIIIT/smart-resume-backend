@@ -1,14 +1,16 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 
 export const generatePdfFromHTML = async (htmlContent) => {
-    let browser;
+    let browser = null;
     try {
-        browser = await puppeteer.launch({
-            headless: true,
-            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        const browser = await puppeteer.launch({
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
+            headless: chromium.headless,
         });
         const page = await browser.newPage();
-        await page.setViewport({ width: 1280, height: 800, deviceScaleFactor: 1});
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
         const pdfBuffer = await page.pdf({
@@ -25,7 +27,7 @@ export const generatePdfFromHTML = async (htmlContent) => {
         return pdfBuffer;
     } catch (error) {
         console.error('Error generating PDF with Puppeteer:', error);
-        throw new Error('Could not generate PDF');
+        throw new Error('Could not generate PDF due to a broswer issue.');
     } finally {
         if(browser) {
             await browser.close();

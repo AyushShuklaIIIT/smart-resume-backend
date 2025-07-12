@@ -11,16 +11,23 @@ export const generatePdfFromHTML = async (htmlContent) => {
             headless: chromium.headless,
         });
         const page = await browser.newPage();
+        await page.setViewport({
+            width: 412,
+            height: 915,
+            deviceScaleFactor: 2,
+            isMobile: true,
+            hasTouch: true,
+        })
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
         const pdfBuffer = await page.pdf({
-            format: 'A4',
+            width: '412px',
             printBackground: true,
             margin: {
-                top: '20px',
-                right: '20px',
-                bottom: '20px',
-                left: '20px',
+                top: '15px',
+                right: '15px',
+                bottom: '15px',
+                left: '15px',
             },
         });
 

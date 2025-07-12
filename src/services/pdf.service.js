@@ -4,30 +4,23 @@ import chromium from "@sparticuz/chromium";
 export const generatePdfFromHTML = async (htmlContent) => {
     let browser = null;
     try {
-        const browser = await puppeteer.launch({
+        browser = await puppeteer.launch({
             args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath(),
             headless: chromium.headless,
         });
         const page = await browser.newPage();
-        await page.setViewport({
-            width: 412,
-            height: 915,
-            deviceScaleFactor: 2,
-            isMobile: true,
-            hasTouch: true,
-        })
         await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
 
         const pdfBuffer = await page.pdf({
-            width: '412px',
+            format: 'A4',
             printBackground: true,
             margin: {
-                top: '15px',
-                right: '15px',
-                bottom: '15px',
-                left: '15px',
+                top: '20px',
+                right: '20px',
+                bottom: '20px',
+                left: '20px',
             },
         });
 
